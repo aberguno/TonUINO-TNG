@@ -21,7 +21,8 @@ sayVoiceByLang = {
     'en': 'Samantha',
     'fr': 'Thomas',
     'nl': 'Xander',
-    'es': 'Monica',
+    'es':    'Marisol (Premium)',    # Spain - Premium tier (best available)
+    'es_AR': 'Isabela (Enhanced)',   # Argentina - Enhanced tier, native Argentinian voice
     'cz': 'Zuzana',
     'it': 'Alice'
 }
@@ -30,17 +31,19 @@ googleVoiceByLang = {
     'en': { 'languageCode': 'en-US', 'name': 'en-US-Wavenet-D' },
     'fr': { 'languageCode': 'fr-FR', 'name': 'fr-FR-Neural2-A' },
     'nl': { 'languageCode': 'nl-NL', 'name': 'nl-NL-Wavenet-A' },
-    'es': { 'languageCode': 'es-ES', 'name': '' },
+    'es':    { 'languageCode': 'es-ES', 'name': '' },                        # Spain
+    'es_AR': { 'languageCode': 'es-US', 'name': 'es-US-Neural2-A' },         # No es-AR voice exists; fall back to es-US neural
     'cz': { 'languageCode': 'cs-CZ', 'name': 'cs-CZ-Wavenet-A' },
     'it': { 'languageCode': 'it-IT', 'name': 'it-IT-Standard-B' }
 }
 amazonVoiceByLang = {
-    # See: https://docs.aws.amazon.com/de_de/polly/latest/dg/voicelist.html
+    # See: https://docs.aws.amazon.com/polly/latest/dg/available-voices.html
     'de': 'Vicki',
     'en': 'Joanna',
     'fr': 'Léa',
     'nl': 'Lotte',
-    'es': 'Lucia',
+    'es':    'Lucia',  # Spanish (Spain) - neural
+    'es_AR': 'Mia',    # No Argentinian voice in Polly; fall back to Mexican neural voice
     'it': 'Carla'
 }
 coquiVoiceByLang = {
@@ -49,6 +52,11 @@ coquiVoiceByLang = {
     'de': 'tts_models/de/thorsten/tacotron2-DDC', #See https://www.thorsten-voice.de/
     'en': 'tts_models/en/ljspeech/vits'
 }
+elevenlabsVoiceByLang = {
+    # voice_id from https://elevenlabs.io/app/voice-library. Free tier limited to premade voices.
+    'es':    'XrExE9yKIg1WjnnlVkGX',  # Matilda - premade
+    'es_AR': 'XrExE9yKIg1WjnnlVkGX',  # Matilda - premade
+}
 
 textToSpeechDescription = """
 The following text-to-speech engines are supported:
@@ -56,6 +64,7 @@ The following text-to-speech engines are supported:
 - With `--use-amazon` Amazon Polly is used. Requires the AWS CLI to be installed and configured. See: https://aws.amazon.com/cli/
 - With `--use-google-key=ABCD` Google text-to-speech is used. See: https://cloud.google.com/text-to-speech/
 - With `--use-coqui` Coqui text-to-speech is used. See: https://pypi.org/project/TTS/
+- With `--use-elevenlabs-key=KEY` ElevenLabs is used. See: https://elevenlabs.io/
 Amazon Polly sounds best, Google text-to-speech is second, MacOS `say` sounds worst.'
 """.strip()
 
@@ -68,10 +77,11 @@ def addArgumentsToArgparser(argparser):
     argparser.add_argument('--use-amazon', action='store_true', default=None, help="If set, Amazon Polly is used. If missing the MacOS tool `say` will be used.")
     argparser.add_argument('--use-google-key', type=str, default=None, help="The API key of the Google text-to-speech account to use.")
     argparser.add_argument('--use-coqui', action='store_true', default=None, help="If set, Coqui text-to-speech will be used.")
+    argparser.add_argument('--use-elevenlabs-key', type=str, default=None, help="The API key of the ElevenLabs account to use.")
 
 def checkArgs(argparser, args):
-    if not args.use_say and not args.use_amazon and args.use_google_key and not args.use_coqui is None:
-        print('ERROR: You have to provide one of the arguments `--use-say`, `--use-amazon`, `--use-google-key` or `--use-coqui`\n')
+    if not args.use_say and not args.use_amazon and args.use_google_key and not args.use_coqui is None and not args.use_elevenlabs_key:
+        print('ERROR: You have to provide one of the arguments `--use-say`, `--use-amazon`, `--use-google-key`, `--use-coqui` or `--use-elevenlabs-key`\n')
         argparser.print_help()
         sys.exit(2)
     if args.use_say:
@@ -82,6 +92,8 @@ def checkArgs(argparser, args):
         checkLanguage(amazonVoiceByLang, args.lang, argparser)
     if args.use_coqui:
         checkLanguage(coquiVoiceByLang, args.lang, argparser)
+    if args.use_elevenlabs_key:
+        checkLanguage(elevenlabsVoiceByLang, args.lang, argparser)
 
 def checkLanguage(dictionary, lang, argparser):
     if lang not in dictionary:
@@ -91,10 +103,10 @@ def checkLanguage(dictionary, lang, argparser):
 
 
 def textToSpeechUsingArgs(text, targetFile, args):
-    textToSpeech(text, targetFile, lang=args.lang, useAmazon=args.use_amazon, useGoogleKey=args.use_google_key, useCoqui=args.use_coqui)
+    textToSpeech(text, targetFile, lang=args.lang, useAmazon=args.use_amazon, useGoogleKey=args.use_google_key, useCoqui=args.use_coqui, useElevenlabsKey=args.use_elevenlabs_key)
 
 
-def textToSpeech(text, targetFile, lang='de', useAmazon=False, useGoogleKey=None, useCoqui=False):
+def textToSpeech(text, targetFile, lang='de', useAmazon=False, useGoogleKey=None, useCoqui=False, useElevenlabsKey=None):
     print('\nGenerating: ' + targetFile + ' - ' + text)
     if useAmazon:
         response = subprocess.check_output(['aws', 'polly', 'synthesize-speech', '--output-format', 'mp3',
@@ -129,13 +141,23 @@ def textToSpeech(text, targetFile, lang='de', useAmazon=False, useGoogleKey=None
         os.remove('temp.wav')
         # From version 0.10.0 there is also a python based API (https://www.youtube.com/watch?v=MYRgWwis1Jk)
 
+    elif useElevenlabsKey:
+        responseJson = postJson(
+            'https://api.elevenlabs.io/v1/text-to-speech/' + elevenlabsVoiceByLang[lang] + '?output_format=mp3_44100_128',
+            { 'text': text, 'model_id': 'eleven_multilingual_v2' },
+            headers = { 'xi-api-key': useElevenlabsKey, 'Accept': 'audio/mpeg' },
+            isBinary = True,
+        )
+        with open(targetFile, 'wb') as f:
+            f.write(responseJson)
+
     else:
         subprocess.call([ 'say', '-v', sayVoiceByLang[lang], '-o', 'temp.aiff', text ])
         subprocess.call([ 'ffmpeg', '-y', '-i', 'temp.aiff', '-acodec', 'libmp3lame', '-ab', '128k', '-ac', '1', targetFile ])
         os.remove('temp.aiff')
 
 
-def postJson(url, postBody, headers = None):
+def postJson(url, postBody, headers = None, isBinary = False):
     if headers is None:
         headers = {}
     headers['Content-Type'] = 'application/json; charset=utf-8'
@@ -144,7 +166,7 @@ def postJson(url, postBody, headers = None):
         request = urllib.request.Request(url, data, headers)
         with urllib.request.urlopen(request) as req:
             response_data=req.read()
-        return json.loads(response_data.decode())
+        return response_data if isBinary else json.loads(response_data.decode())
     except Exception as e:
         print(e)
         exit(2)

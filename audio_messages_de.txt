@@ -9,9 +9,10 @@ advert/0305_kindergarden.mp3|KiTa-Modus aktiviert.
 advert/0306_fire.mp3|Feuer....10s....und weiter geht's
 advert/0307_water.mp3|Wasser....10s....und weiter geht's
 advert/0308_air.mp3|Luft....10s....und weiter geht's
+advert/0309_jukebox.mp3|Jukebox-Modus aktiviert.
 advert/0320_bt_on.mp3|Bluetooth wird eingeschaltet
 advert/0321_bt_off.mp3|Bluetooth wird ausgeschaltet
-advert/0322_bt_pairing.mp3|Bluetooth wird verbunden
+advert/0322_pairing.mp3|Bluetooth wird verbunden
 advert/0323_standby_timer_off.mp3|Der Standby Timer wird ausgeschaltet
 advert/0324_standby_timer_on.mp3|Der Standby Timer wird wieder eingeschaltet
 mp3/0300_new_tag.mp3|Oh, eine neue Karte!
@@ -45,6 +46,7 @@ mp3/0335_num_answer_4.mp3|4 Antworten.
 mp3/0336_num_answer_2_1.mp3|2 Antworten und eine Lösung.
 mp3/0337_num_answer_4_1.mp3|4 Antworten und eine Lösung.
 mp3/0338_num_answer_0_1.mp3|Nur eine Lösung mit Buzzer.
+mp3/0340_num_tracks.mp3|Wie viele Tracks sollen gespielt werden?
 mp3/0400_ok.mp3|OK. Ich habe die Karte konfiguriert.
 mp3/0401_error.mp3|Oh weh! Das hat leider nicht geklappt!
 mp3/0402_ok_settings.mp3|Ok, ich habe die Einstellungen gespeichert
@@ -84,7 +86,7 @@ mp3/0910_switch_volume.mp3|Funktion der Lautstärketasten umdrehen.
 mp3/0911_reset.mp3|Alle Einstellungen löschen.
 mp3/0912_admin_lock.mp3|Das Adminmenü absichern.
 mp3/0913_pause_on_card_removed.mp3|Pause, wenn Karte entfernt wird. Achtung: Dies ist nicht kompatibel mit der Kita Modifikationskarte!
-mp3/0914_memory_cards.mp3|Erstelle die Karten für das Memory Spiel.
+mp3/0914_memory_game_cards.mp3|Erstelle die Karten für das Memory Spiel.
 mp3/0919_continue_admin.mp3|Und weiter im Admin Menü. Durch einen langen Druck auf die Pausetaste kannst du das Admin Menü abbrechen.
 mp3/0920_eq_intro.mp3|Bitte wähle eine Einstellung für den EQ mit den Lautstärketasten aus und bestätige sie mit der Pausetaste.
 mp3/0921_normal.mp3|Normal
@@ -101,7 +103,8 @@ mp3/0934_no.mp3|Nein.
 mp3/0935_yes.mp3|Ja.
 mp3/0936_batch_cards_intro.mp3|OK, bitte lege nun nacheinander die Karten auf die Box. Ich werde die jeweilige Nummer vorher ansagen, damit du nicht durcheinander kommst. Zum Abbrechen einfach die Pause Taste lange drücken!
 mp3/0937_memory_game_cards_intro.mp3|OK, bitte lege nun nacheinander die Karten für das Memory Spiel auf die Box. Ich werde die jeweilige Nummer vorher ansagen, damit du nicht durcheinander kommst. Zum Abbrechen einfach die Pause Taste kurz drücken!
-mp3/0940_shortcut_into.mp3|Bitte wähle den Shortcut, den du konfigurieren möchtest, aus. Falls du das 3 mal 3 Button-board hast, kannst du auch dort eine Taste drücken. 
+mp3/0938_modifier_sleep_mode.mp3|Soll der laufende Track noch zu Ende gespielt werden?
+mp3/0940_shortcut_into.mp3|Bitte wähle den Shortcut, den du konfigurieren möchtest, aus. Falls du das 3 mal 3 Button-board hast, kannst du auch dort eine Taste drücken.
 mp3/0941_pause.mp3|Vor- und Zurücktaste
 mp3/0942_up.mp3|Vor- bzw. Lautertaste
 mp3/0943_down.mp3|Zurück- bzw. Leisertaste

@@ -19,6 +19,7 @@ if __name__ == '__main__':
     text_to_speech.addArgumentsToArgparser(argparser)
     argparser.add_argument('--skip-numbers', action='store_true', help='If set, no number messages will be generated (`0001.mp3` - `0255.mp3`)')
     argparser.add_argument('--only-new', action='store_true', help='If set, only new messages will be created.')
+    argparser.add_argument('--copy-sounds-from', type=str, default=None, help='If set, copy non-TTS sound effects listed in `sounds.txt` from this directory (e.g. `sd-card`).')
     args = argparser.parse_args()
 
 
@@ -55,3 +56,20 @@ if __name__ == '__main__':
                     continue
                 text = match.group(2)
                 text_to_speech.textToSpeechUsingArgs(text=text, targetFile=targetDir + "/" + fileName, args=args)
+
+    soundsFile = '{}/sounds.txt'.format(args.input)
+    if args.copy_sounds_from and os.path.isfile(soundsFile):
+        with open(soundsFile) as f:
+            for line in f:
+                fileName = line.strip()
+                if not fileName or fileName.startswith('#'):
+                    continue
+                src = '{}/{}'.format(args.copy_sounds_from, fileName)
+                dst = '{}/{}'.format(targetDir, fileName)
+                if args.only_new and os.path.isfile(dst):
+                    continue
+                if os.path.isfile(src):
+                    print('Copying sound: {} -> {}'.format(src, dst))
+                    shutil.copy(src, dst)
+                else:
+                    print('WARNING: source sound not found: {}'.format(src))

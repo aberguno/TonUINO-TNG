@@ -29,6 +29,7 @@ Temporary Items
 
 # TonUINO
 /tools/*.pyc
+/tools/__pycache__/
 /Release/
 /sc-card_priv/
 
